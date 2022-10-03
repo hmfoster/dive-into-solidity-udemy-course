@@ -24,19 +24,20 @@ contract KnowledgeTest {
         t[0] = "VET";
     }
 
-    function getBalance() public view returns (uint) {
+    function getBalance() public view returns (uint256) {
         return address(this).balance;
     }
 
-    function transferAll(address payable destination) public onlyOwner {
-        destination.transfer(address(this).balance);
+    function transferAll(address payable destination) external onlyOwner {
+        (bool result, ) = destination.call{value: getBalance()}("");
+        require(result, "TX_FAILED");
     }
 
     function start() public {
         players.push(msg.sender);
     }
 
-    function concatenate(string memory str1, string memory str2) public pure returns (string memory){
+    function concatenate(string calldata str1, string calldata str2) public pure returns (string memory){
         //return string(abi.encodePacked(str1, str2));
         return string.concat(str1, str2);
     }
